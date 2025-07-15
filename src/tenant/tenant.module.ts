@@ -12,11 +12,11 @@ export const CONNECTION = Symbol('CONNECTION');
 const connectionFactory = {
   provide: CONNECTION,
   scope: Scope.REQUEST,
-  useFactory: (request: ExpressRequest) => {
+  useFactory: async (request: ExpressRequest) => {
     const { tenantDomain } = request;
 
     if (tenantDomain) {
-      return getTenantConnection(tenantDomain);
+      return await getTenantConnection(tenantDomain);
     }
 
     return null;

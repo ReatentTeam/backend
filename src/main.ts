@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './config/exception';
 import { NestExpressApplication } from "@nestjs/platform-express";
 import helmet from "helmet";
+import { tenancyMiddleware } from './middleware/tenant.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -17,6 +18,7 @@ async function bootstrap() {
   });
   
   app.use(helmet());
+  app.use(tenancyMiddleware);
   app.setGlobalPrefix('api'); // Set a global prefix for all routes app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
