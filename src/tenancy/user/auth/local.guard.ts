@@ -1,8 +1,5 @@
-
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-// note local guard use local strategy
-
 @Injectable()
-export class LocalAuthGuard extends AuthGuard('admin-local') {}
+export class LocalAuthGuard extends AuthGuard('tenant-local') {} 

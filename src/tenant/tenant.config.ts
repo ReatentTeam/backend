@@ -23,9 +23,40 @@ export async function getTenantConnection(tenantDomain: string): Promise<DataSou
 
   const dataSource = new DataSource(options);
 
-  await dataSource.query(`CREATE SCHEMA IF NOT EXISTS "tenant_${tenantDomain}"`);
+  // Initialize the connection first
   await dataSource.initialize();
+  
+  // Create schema if it doesn't exist (after initialization)
+  await dataSource.query(`CREATE SCHEMA IF NOT EXISTS "tenant_${tenantDomain}";`);
+  
+  // Set the search path to the tenant schema
+  await dataSource.query(`SET search_path TO "tenant_${tenantDomain}";`);
 
   dataSourceMap.set(connectionName, dataSource);
   return dataSource;
+}
+
+// Utility function to execute queries in tenant schema
+export async function executeInTenantSchema<T>(
+  tenantDomain: string, 
+  query: string, 
+  params: any[] = []
+): Promise<T[]> {
+  const schema = `tenant_${tenantDomain}`;
+  const connection = await getTenantConnection(tenantDomain);
+  
+  // Set the search path to the tenant schema
+  await connection.query(`SET search_path TO "${schema}";`);
+  
+  return await connection.query(query, params);
+}
+
+// Function to close all tenant connections (useful for cleanup)
+export async function closeAllTenantConnections(): Promise<void> {
+  for (const [name, dataSource] of dataSourceMap.entries()) {
+    if (dataSource.isInitialized) {
+      await dataSource.destroy();
+    }
+  }
+  dataSourceMap.clear();
 }

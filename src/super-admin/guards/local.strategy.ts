@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'admin-local') {
   constructor(private authService: AuthService) {
     super({
         usernameField: 'email',
@@ -17,6 +17,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
+    console.log('[Admin Local Strategy] Admin user validated successfully');
     return user;
   }
 }

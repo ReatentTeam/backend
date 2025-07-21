@@ -9,19 +9,21 @@ import { OtpService } from 'src/helpers/otp.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './guards/local.strategy';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([
       SuperAdminEntity
     ]),
+    PassportModule,
     JwtModule.register({
       secret: 'your-jwt-secret',
       signOptions: { expiresIn: '1h' },
     }),
-    
+    MailModule
   ],
-  providers: [SuperAdminService, AuthService,OtpService,LocalStrategy, ],
+  providers: [SuperAdminService, AuthService, OtpService, LocalStrategy],
   controllers: [SuperAdminController, AuthController]
 })
 export class SuperAdminModule {}

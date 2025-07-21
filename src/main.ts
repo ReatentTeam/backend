@@ -18,8 +18,11 @@ async function bootstrap() {
   });
   
   app.use(helmet());
+  app.setGlobalPrefix('api'); // Set a global prefix for all routes
+  
+  // Apply tenant middleware globally with route filtering
   app.use(tenancyMiddleware);
-  app.setGlobalPrefix('api'); // Set a global prefix for all routes app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 

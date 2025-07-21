@@ -6,6 +6,12 @@ import { REQUEST } from '@nestjs/core';
 import { getTenantConnection } from './tenant.config';
 import { Tenant } from './tenant.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SchoolModule } from '../tenancy/school/school.module';
+import { UserModule } from '../tenancy/user/user.module';
+import { MailModule } from '../mail/mail.module';
+import { School } from '../tenancy/school/school.entity';
+import { User } from '../tenancy/user/entity/User.entity';
+import { OtpService } from 'src/helpers/otp.service';
 
 export const CONNECTION = Symbol('CONNECTION');
 
@@ -25,13 +31,18 @@ const connectionFactory = {
 };
 
 @Module({
-  imports:[
+  imports: [
     TypeOrmModule.forFeature([
-          Tenant
-        ])
+      Tenant,
+      School,
+      User
+    ]),
+    SchoolModule,
+    UserModule,
+    MailModule,
   ],
-  providers: [TenantService, connectionFactory],
-  exports:[CONNECTION],
+  providers: [TenantService, connectionFactory, OtpService],
+  exports: [CONNECTION, TenantService],
   controllers: [TenantController]
 })
 export class TenantModule {}

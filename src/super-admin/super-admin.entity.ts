@@ -34,7 +34,11 @@ export class SuperAdminEntity extends BaseEntity {
 
   @Column({ type: String, default: null })
   user_key: string;
+  
+  @Column({default: null})
+  last_login: Date;
 
-
+  @Column({default: false})
+  isEmailVerified: boolean;
 
 }
